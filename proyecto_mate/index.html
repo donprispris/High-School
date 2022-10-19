@@ -1,0 +1,868 @@
+<html>
+    <head>
+        <title>Calcuradora</title>
+    </head>
+    <!--<script src="http://cdnjs.cloudflare.com/ajax/libs/mathjs/0.15.0/math.min.js"></script>-->
+    <script src="jquery.min.js"></script>
+    <script src="math.min.js"></script>
+
+    <meta name="description" content="math.js | basic usage">
+    <link rel="stylesheet" type="text/css" href="graph.css">
+    <script src="js_g.js"></script>
+    <body>
+        <div class="head">
+            
+            <fieldset class="material">
+            <h1>{x} Geo-Math</h1>
+            
+            </fieldset>
+            
+        </div>
+        
+        
+        <div class="g" id="graph">
+            <div id="can" width="500" height="500">
+            <canvas id="canvas1" height="500" width="1200" style="border:1px solid #000000;"></canvas>
+            </div>
+        </div>
+        <div>
+            
+            <form >
+	          <h2>Graficador de funciones</h2>
+                
+	        <fieldset class="material">
+                <img src="ic.png" id="f">
+		       <input type="text" placeholder="ingrese la ecuacion" autocomplete="off"  id="inputField" class="1">
+                <button type="button" class="btl" onclick="historial()">Guardar</button>
+                <button type="button" class="btl" id="ca"></button>
+                <!--<select>
+                    <option value="volvo"></option>
+                    <option value="saab"><img src="negro.jpg"></option>
+                    <option value="mercedes"><img src="morado.jpg"></option>
+                    <option value="audi"><img src="verde.jpg"></option>
+                </select>-->
+		       <hr>
+	        </fieldset>
+            </form>
+        </div>
+        <div id="historial">
+        </div>
+
+       
+<!-- CALCULATOR -->
+<div class="calculator">
+		<!-- CALCULATOR FORM -->
+		<form class="calculator__form">
+				<!-- CALCULATOR ROW -->
+				<div class="calculator__row">
+						<input class="calculator__display" id="display" type="text" disabled />
+				</div>
+				<!-- CALCULATOR LINEA -->
+				<div class="calculator__row">
+						<button type="button" value="c" class="calculator__key calculator__clear"id="bt"></button>
+						<button type="button" value="<--" class="calculator__key calculator__backspace"id="bt"></button>
+						<button type="button" value="^3" class="calculator__key calculator__power"id="bt"></button>
+						<button type="button" value="+" class="calculator__key calculator__button"id="bt"></button>
+				</div>
+				<!-- CALCULATOR LINEA -->
+				<div class="calculator__row">
+                        <button type="button" value="9" class="calculator__key calculator__button"id="bt"></button>
+						<button type="button" value="8" class="calculator__key calculator__button"id="bt"></button>
+						<button type="button" value="7" class="calculator__key calculator__button"id="bt"></button>
+						<button type="button" value="-" class="calculator__key calculator__button"id="bt"></button>
+				</div>
+				<!-- CALCULATOR LINEA -->
+				<div class="calculator__row">
+						<button type="button" value="6" class="calculator__key calculator__button"id="bt"></button>
+						<button type="button" value="5" class="calculator__key calculator__button"id="bt"></button>
+						<button type="button" value="4" class="calculator__key calculator__button" id="bt"></button>
+						<button type="button" value="*" class="calculator__key calculator__button" id="bt"></button>
+				</div>
+				<!-- CALCULATOR LINEA -->
+				<div class="calculator__row">
+						<button type="button" value="3" class="calculator__key calculator__button" id="bt"></button>
+						<button type="button" value="2" class="calculator__key calculator__button" id="bt"></button>
+						<button type="button" value="1" class="calculator__key calculator__button" id="bt"></button>
+						<button type="button" value="/" class="calculator__key calculator__button" id="bt"></button>
+				</div>
+				<!-- CALCULATOR LINEA -->
+				<div class="calculator__row">
+						<button type="button" value="0" class="calculator__key calculator__button" id="bt"></button>
+						<button type="button" value="." class="calculator__key calculator__button" id="bt"></button>
+						<button type="button" value="=" class="calculator__key calculator__key--equal" id="igual"></button>
+				</div>
+		</form>
+</div>
+        <div >
+            <form id="derivada">
+            <h2>Formula General</h2>
+            <input type="text" placeholder="A" autocomplete="off" class="inputFieldd" id="A" >
+            <input type="text" placeholder="B" autocomplete="off" class="inputFieldd" id="B"  >
+            <input type="text" placeholder="C" autocomplete="off" class="inputFieldd" id="C" >
+            <button type="button" class="btl"   onclick="de()">Calcular "X"</button>
+            <hr>
+            <div id="container">
+                
+            </div>
+            <div id="container2">
+                
+            </div>
+            <img src="FormulaGeneral.png" id="img">
+            </form>
+        </div>
+        <div>
+        </div>
+        <div id="codigojs">
+        <script>
+            var canvas = document.getElementById("canvas1");
+            var c = canvas.getContext('2d');
+            var n= 1000;
+            var minX=-24;
+            var maxX=24;
+            var minY=-10;
+            var maxY=10;
+            var math = mathjs(),
+            expr = '',
+            scope = {x: 0, t:0},
+            tiempo = 0,
+            Tincremento= .1,
+            tree = math.parse(expr, scope);
+            
+            curva();
+            texto();
+            animacion();
+            
+            function curva()
+            {
+            
+              var i,x,y,por_x, por_y,cordX,cordY;
+              c.beginPath();
+              c.strokeStyle = "#851700";
+                //borrar anterior
+              c.clearRect(0, 0, canvas.width, canvas.height);
+              for(i=0; i< n; i++){
+                por_x = i/(n-1);
+                cordX= por_x *(maxX-minX)+minX;
+                
+                cordY = evaluar(cordX);
+                 
+                por_y= (cordY - minY)/(maxY-minY);
+                  
+                //cordenadas reales
+                por_y = 1- por_y;
+                
+                
+                x= por_x * canvas.width;
+                y= por_y * canvas.height;
+                c.lineTo(x, y);
+                c.strokeStyle = "#851700";
+                
+                        
+               }
+               c.stroke();
+
+               c.strokeStyle = "#851700";
+                        
+               grid();
+                lineas();
+                
+            }
+            function derivada(){
+                var i,x,y,por_x, por_y,cordX,cordY;
+              c.beginPath();
+              c.strokeStyle = "#0228FA";
+                //borrar anterior
+              c.clearRect(0, 0, canvas.width, canvas.height);
+              for(i=0; i< n; i++){
+                por_x = i/(n-1);
+                cordX= por_x *(maxX-minX)+minX;
+                
+                cordY = evaluar(cordX);
+                 
+                por_y= (cordY - minY)/(maxY-minY);
+                  
+                //cordenadas reales
+                por_y = 1- por_y;
+                
+                
+                x= por_x * canvas.width;
+                y= por_y * canvas.height;
+                c.lineTo(x, y);
+                c.strokeStyle = "#0228FA";
+                
+                        
+               }
+               c.stroke();
+
+               c.strokeStyle = "#0228FA";
+                        
+               grid();
+                lineas();
+                
+            }
+            function evaluar(cordX){
+                var cordY;
+                scope.x = cordX;
+                scope.t = tiempo;
+                return tree.eval();
+            }
+            function texto (){
+                var input = $('#inputField');
+      
+                input.val(expr);;
+      
+      
+                input.keyup(function (event) {
+        expr = input.val();
+        tree = math.parse(expr, scope);
+        curva()
+      });
+                
+            }
+            function textod(){
+                
+            }
+            function texto2(){
+                var input2 = $('.h');
+      
+                input2.val(expr);;
+      
+      
+                input2.keyup(function (event) {
+        expr = input2.val();
+        tree = math.parse(expr, scope);
+        curva()
+      });
+                
+            }
+            function animacion(){
+                setInterval(function(){
+                    tiempo += Tincremento;
+                    curva();
+                },20)
+            }
+            
+            function grid(){
+                
+                var grid_size = 25;
+var x_axis_distance_grid_lines = 10;
+var y_axis_distance_grid_lines = 24;
+var x_axis_starting_point = { number: 1, suffix: '\u03a0' };
+var y_axis_starting_point = { number: 1, suffix: '' };
+
+
+var canvas_width = canvas.width;
+var canvas_height = canvas.height;
+
+var num_lines_x = 25;
+var num_lines_y = 120;
+
+// Draw grid lines along X-axis
+for(var i=0; i<=num_lines_x; i++) {
+    c.beginPath();
+    c.lineWidth = .5;
+    
+    // If line represents X-axis draw in different color
+    if(i == x_axis_distance_grid_lines) 
+        c.strokeStyle = "#000000";
+    else
+        c.strokeStyle = "#AFB0B0";
+    
+    if(i == num_lines_x) {
+        c.moveTo(0, grid_size*i);
+        c.lineTo(canvas_width, grid_size*i);
+    }
+    else {
+        c.moveTo(0, grid_size*i+0.5);
+        c.lineTo(canvas_width, grid_size*i+0.5);
+    }
+    c.stroke();
+}
+
+// Draw grid lines along Y-axis
+for(i=0; i<=num_lines_y; i++) {
+    c.beginPath();
+    c.lineWidth = .5;
+    
+    // If line represents X-axis draw in different color
+    if(i == y_axis_distance_grid_lines) 
+        c.strokeStyle = "#000000";
+    else
+        c.strokeStyle = "#AFB0B0";
+    
+    if(i == num_lines_y) {
+        c.moveTo(grid_size*i, 0);
+        c.lineTo(grid_size*i, canvas_height);
+    }
+    else {
+        c.moveTo(grid_size*i+0.5, 0);
+        c.lineTo(grid_size*i+0.5, canvas_height);
+    }
+    c.stroke();
+}
+                
+                
+
+
+            }
+            function lineas(){
+                //axis y
+                c.font = "10px Arial";
+                c.moveTo(615,25);
+                c.lineTo(585,25);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("9",585,25);
+                
+                c.moveTo(615,50);
+                c.lineTo(585,50);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("8",585,50);
+                
+                c.moveTo(615,75);
+                c.lineTo(585,75);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("7",585,75);
+                
+                c.moveTo(615,100);
+                c.lineTo(585,100);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("6",585,100);
+                
+                c.moveTo(615,125);
+                c.lineTo(585,125);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("5",585,125);
+                
+                c.moveTo(615,150);
+                c.lineTo(585,150);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("4",585,150);
+                
+                c.moveTo(615,175);
+                c.lineTo(585,175);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("3",585,175);
+                
+                c.moveTo(615,200);
+                c.lineTo(585,200);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("2",585,200);
+                
+                c.moveTo(615,225);
+                c.lineTo(585,225);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("1",585,225);
+                
+                //axis -y
+                
+                c.font = "10px Arial";
+                c.moveTo(615,250);
+                c.lineTo(585,250);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("0",590,250);
+                
+                c.moveTo(615,275);
+                c.lineTo(585,275);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-1",585,275);
+                
+                c.moveTo(615,300);
+                c.lineTo(585,300);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-2",585,300);
+                
+                c.moveTo(615,325);
+                c.lineTo(585,325);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-3",585,325);
+                
+                c.moveTo(615,350);
+                c.lineTo(585,350);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-4",585,350);
+                
+                c.moveTo(615,375);
+                c.lineTo(585,375);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-5",585,375);
+                
+                c.moveTo(615,400);
+                c.lineTo(585,400);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-6",585,400);
+                
+                c.moveTo(615,425);
+                c.lineTo(585,425);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-7",585,425);
+                
+                c.moveTo(615,450);
+                c.lineTo(585,450);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-8",585,450);
+                
+                c.moveTo(615,475);
+                c.lineTo(585,475);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-9",585,475);
+                
+                //axis x
+                
+                c.font = "10px Arial";
+                c.moveTo(25,265);
+                c.lineTo(25,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-23",25,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(50,265);
+                c.lineTo(50,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-22",50,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(75,265);
+                c.lineTo(75,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-21",75,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(100,265);
+                c.lineTo(100,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-20",100,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(125,265);
+                c.lineTo(125,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-19",125,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(150,265);
+                c.lineTo(150,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-18",150,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(175,265);
+                c.lineTo(175,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-17",175,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(200,265);
+                c.lineTo(200,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-16",200,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(225,265);
+                c.lineTo(225,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-15",225,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(250,265);
+                c.lineTo(250,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-14",250,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(275,265);
+                c.lineTo(275,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-13",275,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(300,265);
+                c.lineTo(300,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-12",300,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(325,265);
+                c.lineTo(325,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-11",325,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(350,265);
+                c.lineTo(350,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-10",350,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(375,265);
+                c.lineTo(375,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-9",375,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(400,265);
+                c.lineTo(400,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-8",400,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(425,265);
+                c.lineTo(425,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-7",425,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(450,265);
+                c.lineTo(450,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-6",450,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(475,265);
+                c.lineTo(475,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-5",475,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(500,265);
+                c.lineTo(500,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-4",500,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(525,265);
+                c.lineTo(525,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-3",525,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(550,265);
+                c.lineTo(550,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-2",550,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(575,265);
+                c.lineTo(575,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("-1",575,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(600,265);
+                c.lineTo(600,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("0",600,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(625,265);
+                c.lineTo(625,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("1",625,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(650,265);
+                c.lineTo(650,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("2",650,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(675,265);
+                c.lineTo(675,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("3",675,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(700,265);
+                c.lineTo(700,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("4",700,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(725,265);
+                c.lineTo(725,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("5",725,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(750,265);
+                c.lineTo(750,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("6",750,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(775,265);
+                c.lineTo(775,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("7",775,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(800,265);
+                c.lineTo(800,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("8",800,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(825,265);
+                c.lineTo(825,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("9",825,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(850,265);
+                c.lineTo(850,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("10",850,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(875,265);
+                c.lineTo(875,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("11",875,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(900,265);
+                c.lineTo(900,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("12",900,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(925,265);
+                c.lineTo(925,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("13",925,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(950,265);
+                c.lineTo(950,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("14",950,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(975,265);
+                c.lineTo(975,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("15",975,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(1000,265);
+                c.lineTo(1000,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("16",1000,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(1025,265);
+                c.lineTo(1025,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("17",1025,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(1050,265);
+                c.lineTo(1050,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("18",1050,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(1075,265);
+                c.lineTo(1075,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("19",1075,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(1100,265);
+                c.lineTo(1100,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("20",1100,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(1125,265);
+                c.lineTo(1125,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("21",1125,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(1150,265);
+                c.lineTo(1150,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("22",1150,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(1175,265);
+                c.lineTo(1175,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("23",1175,240);
+                
+                c.font = "10px Arial";
+                c.moveTo(1200,265);
+                c.lineTo(1200,240);
+                c.strokeStyle = "black";
+                c.stroke();
+                c.strokeStyle = "black";
+                c.fillText("24",1200,240);
+                
+                
+            }
+            
+        function escribir(canvas,message){
+              
+        c.clearRect(0, 0, canvas.width, canvas.height);
+        c.font = '18pt Calibri';
+        c.fillStyle = 'black';
+        c.fillText(message, 10, 25);
+      }
+      function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+      }
+      
+      canvas.addEventListener('mousemove', function(evt) {
+        var mousePos = getMousePos(canvas, evt);
+        var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+        writeMessage(canvas, message);
+      }, false);
+    
+      
+            
+     
+//historial-----------------------------------------------
+   
+            
+
+        </script>
+        
+    </div>
+    </body>
+</html>
